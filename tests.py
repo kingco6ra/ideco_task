@@ -12,7 +12,7 @@ class ScannerPointTestCase(AioHTTPTestCase):
         return app
 
     async def test_scan_true(self):
-        async with self.client.request('GET', f'/scan/185.215.4.66/79/81') as response:
+        async with self.client.request('GET', '/scan/185.215.4.66/79/81') as response:
             self.assertEqual(response.status, 200)
             answer = await response.json()
 
@@ -25,8 +25,8 @@ class ScannerPointTestCase(AioHTTPTestCase):
             str(answer)
         )
 
-    async def test_scan_false(self):
-        async with self.client.request('GET', '/scan/127.0.0.1/65555/65666') as response:
+    async def test_illgeal_ip(self):
+        async with self.client.request('GET', '/scan/111.2222.44.33/1/8000') as response:
             self.assertEqual(response.status, 400)
-            response = await response.text()
-            self.assertIn('400 bad request: end_port cannot be greater than 65535', response)
+            answer = await response.text()
+            self.assertIn('400 bad request: illegal IP address string passed to inet_aton', answer)
