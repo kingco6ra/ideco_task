@@ -42,6 +42,7 @@ async def get_tasks(request: web.Request):
         tasks.append(port_scan(ip, i, timeout))
     tasks = await asyncio.gather(*tasks)
 
+    logging.info(msg=f'{end_port - begin_port} ports were scanned')
     logging.info(msg=f'{round(time() - start_time, 2)} seconds were spent on scanning')
     return web.json_response(tasks, status=200)
 
