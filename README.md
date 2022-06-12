@@ -2,8 +2,9 @@
     1. git clone https://github.com/kingco6ra/ideco_task.git
     2. cd ideco_task/
     3. python -m venv venv
-    4. source venv/bin/activate
-    5. python main.py
+    4. pip install requirements.txt
+    5. source venv/bin/activate
+    6. python main.py
 
 # Задание 
 Требуется разработать web-приложение для сканирования открытых TCP портов удаленного хоста.
