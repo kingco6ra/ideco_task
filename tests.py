@@ -31,6 +31,18 @@ class ScannerPointTestCase(AioHTTPTestCase):
             answer = await response.text()
             self.assertIn('400 bad request: illegal IP address string passed to inet_aton', answer)
 
+    async def test_begin_port_is_not_int(self):
+        async with self.client.request('GET', '/scan/185.215.4.66/abc/2') as response:
+            self.assertEqual(response.status, 400)
+            answer = await response.text()
+            self.assertIn('400 bad request: begin_port and end_port should consist of numbers only', answer)
+
+    async def test_end_port_is_not_int(self):
+        async with self.client.request('GET', '/scan/185.215.4.66/1/abc') as response:
+            self.assertEqual(response.status, 400)
+            answer = await response.text()
+            self.assertIn('400 bad request: begin_port and end_port should consist of numbers only', answer)
+
     async def test_big_begin_port(self):
         async with self.client.request('GET', '/scan/185.215.4.66/8000/1') as response:
             self.assertEqual(response.status, 400)
