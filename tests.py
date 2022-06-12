@@ -5,7 +5,7 @@ from aiohttp.test_utils import AioHTTPTestCase
 from main import get_tasks
 
 
-class ScannerPointTestCase(AioHTTPTestCase):
+class ScanTestCase(AioHTTPTestCase):
     async def get_application(self) -> Application:
         app = web.Application()
         app.add_routes([web.get('/scan/{ip}/{begin_port}/{end_port}', get_tasks)])
@@ -48,3 +48,9 @@ class ScannerPointTestCase(AioHTTPTestCase):
             self.assertEqual(response.status, 400)
             answer = await response.text()
             self.assertIn('400 bad request: begin_port cannot be greater than end_port and less than zero', answer)
+
+    async def test_big_end_port(self):
+        async with self.client.request('GET', '/scan/185.215.4.66/1/65536') as response:
+            self.assertEqual(response.status, 400)
+            answer = await response.text()
+            self.assertIn('400 bad request: end_port cannot be greater than 65535', answer)
