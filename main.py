@@ -37,9 +37,7 @@ async def get_tasks(request: web.Request):
     end_port = request.match_info['end_port']
     begin_port, end_port, timeout = validate(ip, begin_port, end_port)
 
-    tasks = []
-    for i in range(begin_port, end_port + 1):
-        tasks.append(port_scan(ip, i, timeout))
+    tasks = [port_scan(ip, i, timeout) for i in range(begin_port, end_port + 1)]
     tasks = await asyncio.gather(*tasks)
 
     logging.info(msg=f'{end_port - begin_port} ports were scanned')
@@ -82,7 +80,7 @@ def validate(ip, begin_port, end_port) -> list[int]:
     return [begin_port, end_port, timeout]
 
 
-if __name__ == '__main__':
+def main():
     logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
     app = web.Application()
@@ -90,3 +88,7 @@ if __name__ == '__main__':
         web.get('/scan/{ip}/{begin_port}/{end_port}', get_tasks)
     ])
     web.run_app(app)
+
+
+if __name__ == '__main__':
+    main()
